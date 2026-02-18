@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oxita - Boutique Officielle</title>
+
+<style>
+:root{
+--bleu:#0033cc;
+--rouge:#cc0000;
+--blanc:#ffffff;
+--fond:#0b0f1a;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial, Helvetica, sans-serif;}
+body{
+background:radial-gradient(circle at top,var(--bleu) 0%,#0b0f1a 40%,#0b0f1a 60%,var(--rouge) 120%);
+color:white;
+min-height:100vh;
+transition: background 0.5s;
+}
+
+/* HEADER */
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 40px;
+background:rgba(10,15,30,0.85);
+backdrop-filter:blur(10px);
+position:fixed;
+width:100%;
+top:0;
+z-index:1000;
+border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+nav a{
+color:white;
+margin-left:20px;
+text-decoration:none;
+font-weight:bold;
+}
+
+.cart-btn{
+background:linear-gradient(90deg,var(--bleu),var(--rouge));
+padding:8px 16px;
+border-radius:999px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+}
+
+.cart-btn:hover{
+transform:scale(1.05);
+box-shadow:0 0 15px rgba(0,51,204,0.7);
+}
+
+/* HERO */
+.hero{
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding-top:80px;
+}
+
+.hero h1{
+font-size:48px;
+margin-bottom:10px;
+text-shadow:0 0 25px rgba(0,51,204,0.7);
+transition: text-shadow 0.3s;
+}
+
+.hero h1:hover{
+text-shadow:0 0 40px rgba(0,51,204,1), 0 0 20px rgba(204,0,0,0.8);
+}
+
+/* PRODUCTS */
+.products{
+padding:80px 20px;
+text-align:center;
+}
+
+.products-grid{
+display:flex;
+flex-wrap:wrap;
+gap:25px;
+justify-content:center;
+margin-top:40px;
+}
+
+.product-card{
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(10px);
+padding:18px;
+border-radius:16px;
+width:250px;
+box-shadow:0 0 15px rgba(0,51,204,0.2);
+transition:0.3s all;
+border:1px solid rgba(255,255,255,0.08);
+position:relative;
+cursor:pointer;
+}
+
+.product-card:hover{
+transform:translateY(-10px) scale(1.06);
+box-shadow:0 0 45px rgba(0,51,204,0.8), 0 0 25px rgba(204,0,0,0.5);
+}
+
+.product-card img{
+width:100%;
+border-radius:10px;
+margin-bottom:10px;
+transition: transform 0.3s;
+}
+
+.product-card img:hover{
+transform:scale(1.05);
+}
+
+/* BADGE */
+.badge{
+position:absolute;
+top:10px;
+left:10px;
+background:linear-gradient(90deg,var(--bleu),var(--rouge));
+padding:4px 10px;
+border-radius:999px;
+font-size:12px;
+font-weight:bold;
+color:white;
+}
+
+/* BUTTON */
+.btn{
+background:linear-gradient(90deg,var(--bleu),var(--rouge));
+color:white;
+padding:8px 15px;
+border:none;
+border-radius:999px;
+cursor:pointer;
+font-weight:bold;
+margin-top:8px;
+transition:0.3s all;
+}
+
+.btn:hover{
+transform:scale(1.08);
+box-shadow:0 0 20px rgba(0,51,204,0.7), 0 0 15px rgba(204,0,0,0.5);
+}
+
+/* ADD PRODUCT */
+.add-product{
+margin-top:50px;
+background:rgba(255,255,255,0.05);
+padding:20px;
+border-radius:15px;
+display:inline-block;
+border:1px solid rgba(255,255,255,0.08);
+}
+
+.add-product input{
+padding:8px;
+margin:5px;
+border-radius:8px;
+border:none;
+}
+
+/* CART */
+.cart-panel{
+position:fixed;
+right:-400px;
+top:0;
+width:350px;
+height:100%;
+background:#111827;
+box-shadow:-5px 0 30px rgba(0,0,0,0.5);
+padding:20px;
+transition:0.4s;
+overflow-y:auto;
+z-index:2000;
+}
+
+.cart-panel.open{
+right:0;
+}
+
+.cart-item{
+border-bottom:1px solid rgba(255,255,255,0.1);
+padding:10px 0;
+}
+
+/* FOOTER */
+footer{
+text-align:center;
+padding:20px;
+background:#05070f;
+color:white;
+margin-top:60px;
+}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+.hero h1{font-size:32px;}
+.products-grid{gap:15px;}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>🔥 Oxita</h2>
+<nav>
+<a href="#home">Accueil</a>
+<a href="#products">Produits</a>
+<span class="cart-btn" onclick="toggleCart()">🛒 (<span id="cartCount">0</span>)</span>
+</nav>
+</header>
+
+<section class="hero" id="home">
+<h1>Bienvenue chez Oxita</h1>
+<p>La boutique officielle gaming ⚡</p>
+</section>
+
+<section class="products" id="products">
+<h2>Nos Produits</h2>
+
+<div class="products-grid" id="productsGrid"></div>
+
+<div class="add-product">
+<h3>➕ Ajouter un produit</h3><br>
+<input type="text" id="productName" placeholder="Nom">
+<input type="number" id="productPrice" placeholder="Prix €">
+<input type="file" id="productImage" accept="image/*"><br><br>
+<button class="btn" onclick="addProduct()">Ajouter</button>
+</div>
+</section>
+
+<!-- PANIER -->
+<div class="cart-panel" id="cartPanel">
+<h2>🛒 Panier</h2>
+<div id="cartItems"></div>
+<h3>Total : <span id="cartTotal">0</span> €</h3>
+<br>
+<!-- BOUTON PAYPAL DIRECT -->
+<a id="paypalBtn" target="_blank" class="btn">Payer avec PayPal</a>
+</div>
+
+<footer>
+<p>© 2026 Oxita — Tous droits réservés</p>
+</footer>
+
+<script>
+let products = JSON.parse(localStorage.getItem("products") || "[]");
+let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+// === SAVE DATA ===
+function saveData(){
+localStorage.setItem("products", JSON.stringify(products));
+localStorage.setItem("cart", JSON.stringify(cart));
+updatePayPalLink();
+}
+
+// === RENDER PRODUCTS ===
+function renderProducts(){
+const grid=document.getElementById("productsGrid");
+grid.innerHTML="";
+
+products.forEach((p,index)=>{
+const card=document.createElement("div");
+card.className="product-card";
+
+card.innerHTML=`
+<div class="badge">BEST</div>
+<img src="${p.image}">
+<h3>${p.name}</h3>
+<div><b>${p.price}€</b></div>
+<button class="btn" onclick="addToCart(${index})">Ajouter</button>
+<button class="btn" style="background:#cc0000;margin-left:5px;"
+onclick="deleteProduct(${index})">Supprimer</button>
+`;
+
+grid.appendChild(card);
+});
+}
+
+// === ADD PRODUCT ===
+function addProduct(){
+const name=document.getElementById("productName").value;
+const price=document.getElementById("productPrice").value;
+const file=document.getElementById("productImage").files[0];
+
+if(!name||!price||!file){alert("Remplis tout !");return;}
+
+const reader=new FileReader();
+reader.onload=function(e){
+products.push({name:name,price:Number(price),image:e.target.result});
+saveData();
+renderProducts();
+};
+reader.readAsDataURL(file);
+
+document.getElementById("productName").value="";
+document.getElementById("productPrice").value="";
+document.getElementById("productImage").value="";
+}
+
+// === DELETE PRODUCT ===
+function deleteProduct(index){
+if(!confirm("Supprimer ce produit ?")) return;
+products.splice(index,1);
+saveData();
+renderProducts();
+}
+
+// === CART WITH QUANTITY ===
+function addToCart(index){
+const product=products[index];
+const existing=cart.find(item=>item.name===product.name);
+
+if(existing){existing.qty += 1;}
+else{cart.push({...product, qty:1});}
+
+saveData();
+renderCart();
+}
+
+function changeQty(i,delta){
+cart[i].qty += delta;
+if(cart[i].qty <= 0){cart.splice(i,1);}
+saveData();
+renderCart();
+}
+
+function renderCart(){
+const items=document.getElementById("cartItems");
+const count=document.getElementById("cartCount");
+const total=document.getElementById("cartTotal");
+
+items.innerHTML="";
+let sum=0;
+let totalQty=0;
+
+cart.forEach((item,i)=>{
+sum += item.price * item.qty;
+totalQty += item.qty;
+items.innerHTML+=`
+<div class="cart-item">
+<b>${item.name}</b><br>
+${item.price}€ × ${item.qty}
+<br>
+<button class="btn" onclick="changeQty(${i},-1)">➖</button>
+<button class="btn" onclick="changeQty(${i},1)">➕</button>
+</div>
+`;
+});
+
+count.textContent=totalQty;
+total.textContent=sum.toFixed(2);
+updatePayPalLink();
+}
+
+// === UPDATE PAYPAL LINK ===
+function updatePayPalLink(){
+const paypalBtn=document.getElementById("paypalBtn");
+if(cart.length===0){
+paypalBtn.href="#";
+paypalBtn.style.opacity=0.5;
+paypalBtn.style.pointerEvents="none";
+return;
+}else{
+paypalBtn.style.opacity=1;
+paypalBtn.style.pointerEvents="auto";
+}
+
+// lien PayPal.me simple avec montant total arrondi
+let total = cart.reduce((sum,item)=>sum+item.price*item.qty,0);
+total=Math.ceil(total); 
+paypalBtn.href=`https://paypal.me/kelyanLetellier/${total}`;
+paypalBtn.target="_blank";
+}
+
+// === TOGGLE CART ===
+function toggleCart(){
+document.getElementById("cartPanel").classList.toggle("open");
+}
+
+// === INIT ===
+renderProducts();
+renderCart();
+</script>
+
+</body>
+</html>
